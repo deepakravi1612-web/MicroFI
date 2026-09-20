@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>microfi</title>
+  <meta name="description" content="microfi - Real-time lending management, daily cash reconciliation, loan disbursements, payment collections, and automated audit analysis.">
+  <meta name="theme-color" content="#06B6D4">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       AUTHENTICATION / LOGIN VIEW
+       ========================================================================== -->
+  <div id="auth-container" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-logo-header">
+        <div class="auth-logo-img-wrap">
+          <img src="assets/microfi-logo.png" alt="microfi logo" class="auth-logo-img">
+        </div>
+        <h1 class="auth-title" id="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Sign in to your microfi portfolio ledger</p>
+      </div>
+
+      <div class="quick-demo-pill" id="demo-fill-btn" title="Click to autofill demo credentials">
+        <span>⚡ Quick Demo Credentials</span>
+        <span style="font-size: 0.7rem; text-decoration: underline;">Auto Fill</span>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="auth-name">Full Name</label>
+          <div class="input-container">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </span>
+            <input type="text" id="auth-name" class="form-input" placeholder="e.g. Deepan Kumar" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-email">Email ID / Mobile Number</label>
+          <div class="input-container">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </span>
+            <input type="text" id="auth-email" class="form-input" placeholder="deepan@microfi.io" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Password</label>
+          <div class="input-container">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </span>
+            <input type="password" id="auth-password" class="form-input" placeholder="••••••••" required>
+            <button type="button" class="input-toggle-btn" id="toggle-password-btn" title="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-actions-row">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted);">
+            <input type="checkbox" checked style="accent-color: var(--primary);"> Remember me
+          </label>
+          <span class="auth-link" onclick="window.app.showToast('Password reset link sent to your registered email.', 'info')">Forgot Password?</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="auth-submit-btn" style="padding: 14px; font-size: 0.95rem;">
+          Sign In to microfi
+        </button>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
+          <span class="auth-link" id="auth-toggle-link">New to microfi? Create Account</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN APPLICATION SHELL
+       ========================================================================== -->
+  <div id="app-shell" style="display: none;">
+
+    <!-- TOP HEADER -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-container">
+          <img src="assets/microfi-logo.png" alt="microfi" class="navbar-logo-img">
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="header-quick-action" onclick="window.app.showToast('All ledger books are reconciled and in sync.', 'info')" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="notification-badge"></span>
+        </button>
+
+        <div class="user-profile-badge" onclick="window.app.switchView('profile')" title="View Profile Settings">
+          <div class="user-avatar">DK</div>
+          <span class="user-name">Deepan Kumar</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN SCROLLABLE CONTENT WRAPPER -->
+    <main class="main-wrapper">
+
+      <!-- ====================================================================
+           1. HOME / DASHBOARD VIEW
+           ==================================================================== -->
+      <section id="view-home" class="view-section active-view">
+        
+        <!-- YOUR SECTORS / AREAS SECTION -->
+        <div class="sectors-section">
+          <div class="sectors-header-row">
+            <div>
+              <div class="section-label">FINANCIAL AREAS</div>
+              <h2 class="section-title">YOUR SECTORS</h2>
+            </div>
+            <button class="btn-primary-sm" id="open-new-sector-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              + NEW SECTOR
+            </button>
+          </div>
+
+          <!-- Dynamic Sector Cards Grid -->
+          <div class="sectors-grid" id="sectors-grid-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- RECENT ACTIVITY PREVIEW -->
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-title-row">
+            <div>
+              <div class="section-label">AUDIT TRAIL</div>
+              <h3 class="section-title">Recent Transactions</h3>
+            </div>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="window.app.switchView('transactions')">
+              View All
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Party / Details</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Date & Method</th>
+                  <th>Amount</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="home-recent-transactions-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           2. PAY & LENDING MANAGEMENT VIEW
+           ==================================================================== -->
+      <section id="view-pay" class="view-section">
+        
+        <div class="sectors-header-row">
+          <div>
+            <div class="section-label">PORTFOLIO & CLOSING</div>
+            <h2 class="section-title">PAY & LENDING OPERATIONS</h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="open-collect-modal-btn">
+              + COLLECT PAYMENT
+            </button>
+            <button class="btn btn-secondary" id="open-disburse-modal-btn">
+              + DISBURSE LOAN
+            </button>
+            <button class="btn btn-secondary" id="open-expense-modal-btn">
+              + ADD EXPENSE
+            </button>
+          </div>
+        </div>
+
+        <!-- PAY SUMMARY METRICS -->
+        <div class="financial-summary-grid" style="margin-top: 18px;">
+          <div class="fin-card">
+            <div class="fin-card-header">
+              <div class="fin-icon-box fin-icon-green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="fin-card-label">COLLECTED AMOUNT</div>
+            <div class="fin-card-amount text-success" id="pay-collected-amount">₹ 0.00</div>
+          </div>
+
+          <div class="fin-card">
+            <div class="fin-card-header">
+              <div class="fin-icon-box fin-icon-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+              </div>
+            </div>
+            <div class="fin-card-label">LOAN DISBURSED</div>
+            <div class="fin-card-amount" style="color: #EA580C;" id="pay-loan-disbursed">₹ 0.00</div>
+          </div>
+
+          <div class="fin-card">
+            <div class="fin-card-header">
+              <div class="fin-icon-box fin-icon-pink">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 15h0M2 9.5h20"></path></svg>
+              </div>
+            </div>
+            <div class="fin-card-label">EXPENSE</div>
+            <div class="fin-card-amount" style="color: #DC2626;" id="pay-expense">₹ 0.00</div>
+          </div>
+
+          <div class="fin-card">
+            <div class="fin-card-header">
+              <div class="fin-icon-box" style="background: var(--navy-800); color: #FFFFFF;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="fin-card-label">CLOSING BALANCE</div>
+            <div class="fin-card-amount" id="pay-closing-balance-val">₹ 0.00</div>
+          </div>
+        </div>
+
+        <!-- CLOSING BALANCE CARD (ENTIRE CONTAINER IS A LIVE ANIMATED FINANCIAL VISUAL) -->
+        <div class="closing-balance-card theme-zero" id="closing-balance-card">
+          
+          <!-- FULL-BLEED ANIMATED FINANCIAL VISUAL BACKDROP (COVERS ENTIRE BOX) -->
+          <div class="closing-card-bg-visual" id="closing-card-bg-visual" data-mode="zero" aria-hidden="true">
+            <div class="closing-light-streaks">
+              <span class="light-streak streak-1"></span>
+              <span class="light-streak streak-2"></span>
+              <span class="light-streak streak-3"></span>
+            </div>
+            <div class="closing-svg-wrap" id="closing-svg-wrap">
+              <!-- Injected & updated dynamically by app.js -->
+            </div>
+          </div>
+
+          <!-- FOREGROUND FINANCIAL CONTENT (ELEVATED & CRYSTAL CLEAR) -->
+          <div class="closing-card-content">
+            <div class="closing-card-header">
+              <div class="closing-title">C L O S I N G &nbsp; B A L A N C E</div>
+              <div class="closing-status-badge badge-zero" id="closing-status-badge">
+                <span class="badge-dot"></span> → BALANCED
+              </div>
+            </div>
+
+            <div class="closing-amount" id="main-closing-balance-amount">₹ 0.00</div>
+
+            <button class="closing-formula-toggle" id="toggle-breakdown-btn">
+              View Mathematical Breakdown
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+
+            <!-- Expandable Breakdown Drawer -->
+            <div class="breakdown-drawer" id="breakdown-drawer">
+              <div class="breakdown-row">
+                <span>Initial Fund (Base Capital)</span>
+                <span id="bd-initial-fund">₹ 0.00</span>
+              </div>
+              <div class="breakdown-row highlight">
+                <span>+ Collected Amount</span>
+                <span id="bd-collected">₹ 0.00</span>
+              </div>
+              <div class="breakdown-row negative">
+                <span>- Loan Disbursed</span>
+                <span id="bd-disbursed">₹ 0.00</span>
+              </div>
+              <div class="breakdown-row negative">
+                <span>- Operating Expense</span>
+                <span id="bd-expense">₹ 0.00</span>
+              </div>
+              <div class="breakdown-divider"></div>
+              <div class="breakdown-row breakdown-total">
+                <span>Closing Balance (Net Position)</span>
+                <span id="bd-closing-balance">₹ 0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK TRIGGER ROW FOR MODALS -->
+        <div class="action-bar-grid">
+          <div class="action-button-card" onclick="window.app.openModal('collect-payment-modal')" style="cursor: pointer;">
+            <div class="action-btn-icon fin-icon-green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </div>
+            <div class="action-btn-text">
+              <h4>+ COLLECT PAYMENT</h4>
+              <p>Cash, UPI, Bank Transfer, Card</p>
+            </div>
+          </div>
+
+          <div class="action-button-card" onclick="window.app.openModal('disburse-loan-modal')" style="cursor: pointer;">
+            <div class="action-btn-icon fin-icon-orange">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </div>
+            <div class="action-btn-text">
+              <h4>+ DISBURSE LOAN</h4>
+              <p>Issue principal with tenure & interest</p>
+            </div>
+          </div>
+
+          <div class="action-button-card" onclick="window.app.openModal('add-expense-modal')" style="cursor: pointer;">
+            <div class="action-btn-icon fin-icon-pink">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 15h0M2 9.5h20"></path></svg>
+            </div>
+            <div class="action-btn-text">
+              <h4>+ ADD EXPENSE</h4>
+              <p>Record operational and field bills</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLLECTIONS — SECTOR + ROLL NUMBER SEARCH -->
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-title-row">
+            <div>
+              <div class="section-label">COLLECTIONS</div>
+              <h3 class="section-title">Search Customer by Roll No.</h3>
+            </div>
+          </div>
+
+          <!-- Sector Selector + Roll No. Search Row -->
+          <div style="display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap;">
+            <select id="collections-sector-select" class="form-input" style="flex: 1; min-width: 150px; max-width: 240px; padding: 10px 14px; font-weight: 700; border-radius: 10px; border: 1.5px solid var(--border-light); background: #fff; color: var(--navy-900); cursor: pointer;">
+              <option value="">— All Sectors —</option>
+            </select>
+            <div class="search-input-box" style="flex: 2; min-width: 180px; margin: 0;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="collections-roll-search" placeholder="Roll No... (e.g. A01 or #A01)" autocomplete="off" style="font-weight: 600;">
+            </div>
+          </div>
+
+          <!-- Customer Result Cards Container -->
+          <div id="collections-result-container" style="margin-top: 14px;"></div>
+        </div>
+
+        <!-- CLIENT DIRECTORY & OUTSTANDING MATRIX -->
+        <div class="card" style="margin-top: 18px;">
+          <div class="card-title-row">
+            <div>
+              <div class="section-label">LOAN PORTFOLIO</div>
+              <h3 class="section-title">Client Loan Records &amp; Outstandings</h3>
+            </div>
+            <button class="btn-primary-sm" onclick="window.app.openModal('new-customer-modal')">
+              + ENROLL CLIENT
+            </button>
+          </div>
+
+          <div class="search-input-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="customer-search-input" placeholder="Search clients by name, ID, or phone number...">
+          </div>
+
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Roll No.</th>
+                  <th>Client Name &amp; ID</th>
+                  <th>Phone &amp; Sector</th>
+                  <th>Loan Limit</th>
+                  <th>Outstanding Balance</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="customers-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           3. AUDIT HUB VIEW
+           ==================================================================== -->
+      <section id="view-audit" class="view-section">
+        
+        <div class="sectors-header-row">
+          <div>
+            <div class="section-label">FINANCIAL VERIFICATION</div>
+            <h2 class="section-title">AUDIT & RECONCILIATION HUB</h2>
+          </div>
+          <button class="btn btn-secondary" onclick="window.auditEngine.runAnalysisWorkflow()">
+            ⚡ Re-verify All Books
+          </button>
+        </div>
+
+        <!-- AUDIT SUMMARY SCORE CARD -->
+        <div class="audit-score-card">
+          <div class="audit-score-left">
+            <h3>Automated Ledger Integrity Score</h3>
+            <p>Real-time cross-verification between vouchers, receipts, and recorded disbursements.</p>
+          </div>
+          <div class="audit-score-gauge" id="audit-score-gauge-ring">
+            <div class="audit-score-inner">
+              <div id="audit-avg-score-val">94%</div>
+              <span id="audit-avg-score-label">GOOD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MULTI-FORMAT DOCUMENT UPLOAD HERO -->
+        <div class="audit-hero">
+          <div class="section-label" style="margin-bottom: 8px;">DOCUMENT INSPECTOR</div>
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--navy-900); margin-bottom: 14px;">Upload Financial Records for Audit</h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+            <div>
+              <label class="form-label">Document Type</label>
+              <select id="audit-doctype-select" class="form-input" style="padding-left: 14px;">
+                <option value="Payment Receipt">Payment Receipt / Voucher</option>
+                <option value="Invoice">Supplier / Vendor Invoice</option>
+                <option value="Bank Statement">Bank Account Statement</option>
+                <option value="Bill">Utility & Maintenance Bill</option>
+                <option value="Loan Agreement">Loan Agreement Proof</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Reference Title</label>
+              <input type="text" id="audit-doc-title" class="form-input" style="padding-left: 14px;" placeholder="e.g. March Cash Collection Voucher">
+            </div>
+          </div>
+
+          <!-- DROPZONE -->
+          <div class="upload-dropzone" id="audit-dropzone">
+            <input type="file" id="audit-file-input" style="display: none;" accept="image/*,application/pdf">
+            <input type="file" id="audit-camera-input" style="display: none;" accept="image/*" capture="environment">
+
+            <div id="dropzone-prompt">
+              <div class="upload-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              </div>
+              <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--navy-900);">Drag & Drop receipt, bill, or bank statement</h4>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Supports PNG, JPG, PDF documents</p>
+
+              <div class="upload-btn-group">
+                <button type="button" class="btn btn-secondary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="event.stopPropagation(); document.getElementById('audit-file-input').click();">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  Browse File
+                </button>
+                <button type="button" class="btn btn-primary" style="padding: 8px 14px; font-size: 0.8rem;" onclick="event.stopPropagation(); document.getElementById('audit-camera-input').click();">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  Capture Camera
+                </button>
+              </div>
+            </div>
+
+            <!-- PREVIEW CARD -->
+            <div class="audit-file-preview-card" id="audit-preview-box">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <img id="audit-preview-img" class="preview-thumb" src="" alt="Proof Preview">
+                <div style="text-align: left;">
+                  <div id="audit-filename" style="font-weight: 800; font-size: 0.88rem; color: var(--navy-900);">document.jpg</div>
+                  <div id="audit-filesize" style="font-size: 0.75rem; color: var(--text-muted);">1.2 MB</div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-primary-sm" id="run-audit-btn" style="padding: 6px 12px;">
+                  Verify & Inspect
+                </button>
+                <button type="button" class="btn-icon-subtle delete-btn" id="remove-preview-file-btn" title="Remove Document">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- AUDIT FINDINGS & HISTORY -->
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <div class="section-label">AUDIT TRAIL & LOGS</div>
+              <h3 class="section-title">Verified Documents & Inspection Status</h3>
+            </div>
+          </div>
+
+          <div id="audit-history-list" class="audit-findings-list">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           4. FINANCIAL CALCULATOR SUITE VIEW
+           ==================================================================== -->
+      <section id="view-calc" class="view-section">
+        
+        <div class="sectors-header-row">
+          <div>
+            <div class="section-label">FINANCIAL ENGINE</div>
+            <h2 class="section-title">FINANCIAL PROCESS CALCULATORS</h2>
+          </div>
+        </div>
+
+        <!-- CALCULATOR SUB TABS -->
+        <div class="calc-nav-tabs">
+          <button class="calc-tab-btn active" data-calc="cash-recon">
+            💵 Cash Reconciliation
+          </button>
+          <button class="calc-tab-btn" data-calc="emi-loan">
+            📊 Loan / EMI Calculator
+          </button>
+          <button class="calc-tab-btn" data-calc="savings-goal">
+            🎯 Savings Goal
+          </button>
+          <button class="calc-tab-btn" data-calc="sip-invest">
+            📈 Investment / SIP
+          </button>
+        </div>
+
+        <!-- 4.1 CASH RECONCILIATION PANEL -->
+        <div id="calc-cash-recon" class="calc-panel active">
+          
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-title-row">
+              <div>
+                <div class="section-label">DAILY CASH RECONCILIATION</div>
+                <h3 class="section-title">Cash Flow & Physical Drawer Tally</h3>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-secondary" id="recon-sync-system-btn" style="padding: 6px 12px; font-size: 0.75rem;">
+                  Sync Live Books
+                </button>
+                <button class="btn-secondary" id="recon-reset-btn" style="padding: 6px 12px; font-size: 0.75rem;">
+                  Reset Tallies
+                </button>
+              </div>
+            </div>
+
+            <div class="cash-reconciliation-grid">
+              
+              <!-- LEFT: INFLOWS & OUTFLOWS -->
+              <div>
+                <!-- Initial Fund -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label">Initial Opening Cash</label>
+                  <div class="input-container">
+                    <span class="input-icon">₹</span>
+                    <input type="number" id="recon-initial-fund" class="form-input" value="10000" style="padding-left: 32px; font-weight: 800;">
+                  </div>
+                </div>
+
+                <!-- CASH INFLOW ACCORDION -->
+                <div style="background: var(--bg-card-subtle); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-weight: 800; font-size: 0.82rem; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.08em;">
+                      + CASH INFLOWS
+                    </div>
+                    <div style="font-weight: 800; color: var(--primary-dark);" id="recon-total-inflow">₹ 0.00</div>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Cash Sales</label>
+                      <input type="number" id="recon-inflow-sales" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Collections</label>
+                      <input type="number" id="recon-inflow-collections" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Other Income</label>
+                      <input type="number" id="recon-inflow-other" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Additional Cash</label>
+                      <input type="number" id="recon-inflow-additional" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CASH OUTFLOW ACCORDION -->
+                <div style="background: var(--bg-card-subtle); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border-color);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-weight: 800; font-size: 0.82rem; color: #DC2626; text-transform: uppercase; letter-spacing: 0.08em;">
+                      - CASH OUTFLOWS
+                    </div>
+                    <div style="font-weight: 800; color: #DC2626;" id="recon-total-outflow">₹ 0.00</div>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Purchases</label>
+                      <input type="number" id="recon-outflow-purchases" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Transport / Fuel</label>
+                      <input type="number" id="recon-outflow-transport" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Food & Refreshments</label>
+                      <input type="number" id="recon-outflow-food" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Bills & Rent</label>
+                      <input type="number" id="recon-outflow-bills" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                      <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);">Other Expenses</label>
+                      <input type="number" id="recon-outflow-other" class="form-input" style="padding-left: 10px;" placeholder="0">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- EXPECTED CASH SUMMARY BOX -->
+                <div style="margin-top: 16px; padding: 14px; background: #0F172A; color: #FFFFFF; border-radius: var(--radius-lg); display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #94A3B8;">EXPECTED CASH IN DRAWER</span>
+                  <span style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF;" id="recon-expected-cash">₹ 10,000</span>
+                </div>
+
+              </div>
+
+              <!-- RIGHT: PHYSICAL INDIAN CURRENCY COUNT -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div class="section-label">PHYSICAL CURRENCY TALLY</div>
+                  <div style="font-size: 0.82rem; font-weight: 800; color: var(--navy-900);">
+                    Actual: <span id="recon-actual-cash" style="color: var(--primary-dark);">₹ 0</span>
+                  </div>
+                </div>
+
+                <div class="table-container" style="border-radius: var(--radius-md);">
+                  <table class="denomination-table">
+                    <thead>
+                      <tr style="background: #E2E8F0; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
+                        <th style="padding: 8px 12px;">Denom</th>
+                        <th style="padding: 8px; text-align: center;"></th>
+                        <th style="padding: 8px; text-align: center;">Notes / Coins</th>
+                        <th style="padding: 8px 12px; text-align: right;">Total Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="denomination-tbody">
+                      <!-- Rendered by JS: ₹500, ₹200, ₹100, ₹50, ₹20, ₹10, ₹5, ₹2, ₹1 -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- RECONCILIATION RESULT STATUS CARD -->
+                <div class="recon-status-card recon-matched" id="recon-status-card">
+                  <div class="recon-status-badge" id="recon-status-badge">✓ CASH MATCHED</div>
+                  <div class="recon-diff-amount" id="recon-diff-amount">₹ 0.00</div>
+                  <p style="font-size: 0.8rem; opacity: 0.9; margin-top: 6px;" id="status-message">Physical cash in drawer perfectly matches system book balance.</p>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 4.2 LOAN / EMI CALCULATOR PANEL -->
+        <div id="calc-emi-loan" class="calc-panel">
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <div class="section-label">LENDING AMORTIZATION</div>
+                <h3 class="section-title">Loan EMI & Interest Breakdown</h3>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+              <div class="range-slider-group">
+                <div class="range-slider-header">
+                  <span class="range-slider-label">Loan Principal Amount (₹)</span>
+                  <input type="number" id="emi-loan-amount" class="range-slider-val" value="100000" style="width: 130px; border: none; text-align: right;">
+                </div>
+                <input type="range" id="emi-loan-amount-slider" class="custom-range" min="5000" max="2000000" step="5000" value="100000">
+              </div>
+
+              <div class="range-slider-group">
+                <div class="range-slider-header">
+                  <span class="range-slider-label">Annual Interest Rate (% p.a.)</span>
+                  <input type="number" id="emi-interest" class="range-slider-val" value="12" step="0.5" style="width: 80px; border: none; text-align: right;">
+                </div>
+                <input type="range" id="emi-interest-slider" class="custom-range" min="1" max="36" step="0.5" value="12">
+              </div>
+
+              <div class="range-slider-group">
+                <div class="range-slider-header">
+                  <span class="range-slider-label">Loan Tenure (Months)</span>
+                  <input type="number" id="emi-tenure" class="range-slider-val" value="12" style="width: 80px; border: none; text-align: right;">
+                </div>
+                <input type="range" id="emi-tenure-slider" class="custom-range" min="1" max="60" step="1" value="12">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Processing Fee (% of Principal)</label>
+                <input type="number" id="emi-fee" class="form-input" value="1" style="padding-left: 14px; max-width: 200px;">
+              </div>
+
+              <!-- RESULTS BOX -->
+              <div class="calc-result-box">
+                <div class="calc-result-row">
+                  <span class="calc-result-label">Monthly EMI Payable</span>
+                  <span class="calc-result-value calc-result-highlight" id="emi-monthly-result">₹ 8,885</span>
+                </div>
+                <div class="calc-result-row">
+                  <span class="calc-result-label">Total Interest Charged</span>
+                  <span class="calc-result-value" style="color: #EA580C;" id="emi-interest-result">₹ 6,619</span>
+                </div>
+                <div class="calc-result-row">
+                  <span class="calc-result-label">Processing Surcharge</span>
+                  <span class="calc-result-value" id="emi-fee-result">₹ 1,000</span>
+                </div>
+                <div class="calc-result-row">
+                  <span class="calc-result-label">Total Amount Payable (Principal + Interest)</span>
+                  <span class="calc-result-value" id="emi-total-result">₹ 1,06,619</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.3 SAVINGS GOAL CALCULATOR PANEL -->
+        <div id="calc-savings-goal" class="calc-panel">
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <div class="section-label">FINANCIAL PLANNING</div>
+                <h3 class="section-title">Savings Goal & Milestone Planner</h3>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label">Monthly Inflow (₹)</label>
+                <input type="number" id="sav-income" class="form-input" value="50000" style="padding-left: 14px; font-weight: 700;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Monthly Outflow (₹)</label>
+                <input type="number" id="sav-expense" class="form-input" value="30000" style="padding-left: 14px; font-weight: 700;">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Savings Goal (₹)</label>
+              <input type="number" id="sav-target" class="form-input" value="200000" style="padding-left: 14px; font-weight: 700;">
+            </div>
+
+            <div class="calc-result-box">
+              <div class="calc-result-row">
+                <span class="calc-result-label">Net Monthly Surplus</span>
+                <span class="calc-result-value calc-result-highlight" id="sav-monthly-result">₹ 20,000</span>
+              </div>
+              <div class="calc-result-row">
+                <span class="calc-result-label">Estimated Time to Reach Target</span>
+                <span class="calc-result-value" id="sav-time-result">10 Months (0.8 Yrs)</span>
+              </div>
+              <div class="calc-result-row">
+                <span class="calc-result-label">Effective Savings Ratio</span>
+                <span class="calc-result-value" style="color: var(--primary-dark);" id="sav-rate-result">40% of Income</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4.4 INVESTMENT / SIP CALCULATOR PANEL -->
+        <div id="calc-sip-invest" class="calc-panel">
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <div class="section-label">WEALTH ACCUMULATION</div>
+                <h3 class="section-title">Investment & Systematic Plan (SIP)</h3>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label">Initial Lumpsum (₹)</label>
+                <input type="number" id="inv-initial" class="form-input" value="10000" style="padding-left: 14px; font-weight: 700;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Monthly Investment (₹)</label>
+                <input type="number" id="inv-monthly" class="form-input" value="5000" style="padding-left: 14px; font-weight: 700;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Expected Annual Return (% p.a.)</label>
+                <input type="number" id="inv-return" class="form-input" value="12" step="0.5" style="padding-left: 14px; font-weight: 700;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Time Horizon (Years)</label>
+                <input type="number" id="inv-years" class="form-input" value="5" min="1" max="40" style="padding-left: 14px; font-weight: 700;">
+              </div>
+            </div>
+
+            <div class="calc-result-box">
+              <div class="calc-result-row">
+                <span class="calc-result-label">Total Principal Invested</span>
+                <span class="calc-result-value" id="inv-invested-result">₹ 3,10,000</span>
+              </div>
+              <div class="calc-result-row">
+                <span class="calc-result-label">Estimated Wealth Returns</span>
+                <span class="calc-result-value" style="color: var(--primary-dark);" id="inv-returns-result">₹ 1,18,083</span>
+              </div>
+              <div class="calc-result-row">
+                <span class="calc-result-label">Final Maturity Corpus</span>
+                <span class="calc-result-value calc-result-highlight" id="inv-total-result">₹ 4,28,083</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           5. TRANSACTIONS VIEW
+           ==================================================================== -->
+      <section id="view-transactions" class="view-section">
+        
+        <div class="sectors-header-row">
+          <div>
+            <div class="section-label">GENERAL LEDGER</div>
+            <h2 class="section-title">TRANSACTION HISTORY</h2>
+          </div>
+          <button class="btn btn-secondary" id="export-transactions-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export CSV
+          </button>
+        </div>
+
+        <div class="card">
+          <!-- SEARCH & FILTER CHIPS -->
+          <div class="search-input-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="txn-search-input" placeholder="Search by customer, note, voucher ID, or payment mode...">
+          </div>
+
+          <div class="filter-chips-row">
+            <button class="filter-chip txn-filter-chip active" data-filter="ALL">All Records</button>
+            <button class="filter-chip txn-filter-chip" data-filter="COLLECTION">Collections (Inflow)</button>
+            <button class="filter-chip txn-filter-chip" data-filter="LOAN">Loan Disbursements (Outflow)</button>
+            <button class="filter-chip txn-filter-chip" data-filter="EXPENSE">Expenses</button>
+          </div>
+
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Party / Details</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Date & Method</th>
+                  <th>Amount</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           6. PROFILE & SETTINGS VIEW
+           ==================================================================== -->
+      <section id="view-profile" class="view-section">
+
+        <!-- HERO BANNER -->
+        <div class="profile-hero-banner">
+          <div class="profile-hero-bg-orbs">
+            <div class="profile-orb profile-orb-1"></div>
+            <div class="profile-orb profile-orb-2"></div>
+            <div class="profile-orb profile-orb-3"></div>
+          </div>
+
+          <!-- Avatar + Identity -->
+          <div class="profile-hero-identity">
+            <div class="profile-avatar-ring">
+              <div class="profile-avatar-inner profile-large-avatar user-avatar">DK</div>
+              <div class="profile-avatar-status-dot"></div>
+            </div>
+            <div class="profile-hero-info">
+              <h2 class="profile-hero-name profile-name-text">Deepan Kumar</h2>
+              <p class="profile-hero-email profile-email-text">deepan@microfi.io</p>
+              <div class="profile-hero-badges">
+                <span class="profile-role-pill">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  Chief Financial Officer
+                </span>
+                <span class="profile-online-pill">
+                  <span class="profile-online-dot"></span>
+                  Active Session
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Stats Strip -->
+          <div class="profile-stats-strip">
+            <div class="profile-stat-item">
+              <div class="profile-stat-val" id="profile-stat-sectors">--</div>
+              <div class="profile-stat-lbl">Areas</div>
+            </div>
+            <div class="profile-stat-divider"></div>
+            <div class="profile-stat-item">
+              <div class="profile-stat-val" id="profile-stat-clients">--</div>
+              <div class="profile-stat-lbl">Clients</div>
+            </div>
+            <div class="profile-stat-divider"></div>
+            <div class="profile-stat-item">
+              <div class="profile-stat-val" id="profile-stat-loans">--</div>
+              <div class="profile-stat-lbl">Active Loans</div>
+            </div>
+            <div class="profile-stat-divider"></div>
+            <div class="profile-stat-item">
+              <div class="profile-stat-val" id="profile-stat-book">--</div>
+              <div class="profile-stat-lbl">Book Value</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS SECTIONS -->
+        <div class="profile-sections-wrap">
+
+          <!-- Account Settings -->
+          <div class="profile-section-group">
+            <div class="profile-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+              Account
+            </div>
+
+            <div class="profile-card-settings">
+              <!-- Edit Profile -->
+              <div class="profile-row" id="open-edit-profile-btn">
+                <div class="profile-row-icon-wrap profile-icon-blue">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Edit Personal Profile</span>
+                  <span class="profile-row-sub">Name, phone &amp; recovery email</span>
+                </div>
+                <div class="profile-row-chevron">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+
+              <!-- Change Password -->
+              <div class="profile-row" onclick="window.app.showToast('Password reset link sent to your registered email.', 'info')">
+                <div class="profile-row-icon-wrap profile-icon-purple">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Change Password</span>
+                  <span class="profile-row-sub">Send secure reset link to email</span>
+                </div>
+                <div class="profile-row-chevron">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Finance Settings -->
+          <div class="profile-section-group">
+            <div class="profile-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Finance &amp; Ledger
+            </div>
+
+            <div class="profile-card-settings">
+              <!-- Live Book Value -->
+              <div class="profile-row" id="open-live-book-btn" onclick="window.app.openLiveBookValueSection()" style="cursor: pointer;">
+                <div class="profile-row-icon-wrap" style="background: rgba(16, 185, 129, 0.15); color: #10B981;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Live Book Value</span>
+                  <span class="profile-row-sub">Total portfolio &amp; financial area breakdown</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span id="settings-book-val-badge" style="font-size: 0.75rem; font-weight: 800; color: #10B981; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 6px;">₹ 0.00</span>
+                  <div class="profile-row-chevron">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Initial Fund -->
+              <div class="profile-row" onclick="window.app.openModal('initial-fund-modal')">
+                <div class="profile-row-icon-wrap profile-icon-green">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Adjust Initial Fund Balance</span>
+                  <span class="profile-row-sub">Set operating starting capital</span>
+                </div>
+                <div class="profile-row-chevron">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+
+              <!-- Currency -->
+              <div class="profile-row profile-row-select">
+                <div class="profile-row-icon-wrap profile-icon-amber">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Display Currency</span>
+                  <span class="profile-row-sub">Denomination symbol for all figures</span>
+                </div>
+                <select id="currency-setting-select" class="profile-mini-select">
+                  <option value="&#8377;">&#8377; INR</option>
+                  <option value="$">$ USD</option>
+                  <option value="&#8364;">&#8364; EUR</option>
+                  <option value="&#163;">&#163; GBP</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulk Data Import Settings -->
+          <div class="profile-section-group">
+            <div class="profile-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Bulk Data Import
+            </div>
+
+            <div class="profile-card-settings">
+              <!-- Upload Action -->
+              <div class="profile-row" onclick="window.bulkImportManager.openImportModal()" style="cursor:pointer;">
+                <div class="profile-row-icon-wrap" style="background:#EEF2FF;color:var(--primary-dark);">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Import Data</span>
+                  <span class="profile-row-sub">Upload Excel, CSV or JSON files and automatically add data to your ledger</span>
+                </div>
+                <button type="button" class="btn btn-primary" style="padding:6px 14px;font-size:0.78rem;font-weight:800;border-radius:8px;pointer-events:none;">
+                  Upload File
+                </button>
+              </div>
+
+              <!-- Download Template -->
+              <div class="profile-row" onclick="window.bulkImportManager.openTemplateModal()" style="cursor:pointer;">
+                <div class="profile-row-icon-wrap" style="background:#F0FDF4;color:#16A34A;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Download Import Template</span>
+                  <span class="profile-row-sub">Pre-formatted templates for Customers, Loans, Payments &amp; Expenses</span>
+                </div>
+                <div class="profile-row-chevron">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Settings -->
+          <div class="profile-section-group">
+            <div class="profile-section-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+              System
+            </div>
+
+            <div class="profile-card-settings">
+              <!-- Notifications -->
+              <div class="profile-row" onclick="window.app.showToast('All notifications are active and delivered in real-time.', 'info')">
+                <div class="profile-row-icon-wrap profile-icon-teal">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Notification Preferences</span>
+                  <span class="profile-row-sub">Alerts for dues, collections &amp; risks</span>
+                </div>
+                <div class="profile-row-badge-on">ON</div>
+              </div>
+
+              <!-- Export -->
+              <div class="profile-row" onclick="window.app.showToast('Export to PDF/Excel coming soon in the next release.', 'info')">
+                <div class="profile-row-icon-wrap" style="background:#F0FDF4;color:#16A34A;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title">Export Ledger Books</span>
+                  <span class="profile-row-sub">Download PDF / Excel statement</span>
+                </div>
+                <div class="profile-row-coming-soon">Soon</div>
+              </div>
+
+              <!-- Reset DB -->
+              <div class="profile-row profile-row-danger" id="reset-db-btn">
+                <div class="profile-row-icon-wrap" style="background:var(--accent-red-bg);color:var(--accent-red-text);">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                </div>
+                <div class="profile-row-text">
+                  <span class="profile-row-title" style="color:var(--accent-red-text);">Reset to Demo Books</span>
+                  <span class="profile-row-sub">Re-seed sample sectors, clients &amp; vouchers</span>
+                </div>
+                <span class="profile-row-reset-tag">Reset</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- App Info Card -->
+          <div class="profile-app-info-card">
+            <div class="profile-app-info-logo microfi-logo-profile">
+              <img src="assets/microfi-logo.png" alt="microfi" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+            </div>
+            <div>
+              <div class="profile-app-info-name">micro<span>fi</span></div>
+              <div class="profile-app-info-meta">v2.4.1 &middot; Professional Lending Suite</div>
+            </div>
+            <div class="profile-app-info-badge">LIVE</div>
+          </div>
+
+          <!-- Sign Out -->
+          <button class="profile-signout-btn" id="logout-btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sign Out of microfi
+          </button>
+
+        </div><!-- /.profile-sections-wrap -->
+
+      </section>
+
+      <!-- ====================================================================
+           6B. DEDICATED LIVE BOOK VALUE VIEW (Settings -> Live Book Value)
+           ==================================================================== -->
+      <section id="view-live-book-value" class="view-section">
+
+        <!-- Top Navigation Bar & Title -->
+        <div class="sectors-header-row" style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="btn-icon-subtle" onclick="window.app.switchView('profile')" title="Back to Settings">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div>
+              <div class="section-label" style="color: #10B981;">SETTINGS &bull; FINANCIAL PORTFOLIO</div>
+              <h2 class="section-title">LIVE BOOK VALUE</h2>
+            </div>
+          </div>
+          <div style="font-size: 0.72rem; font-weight: 700; color: #10B981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 12px; border-radius: var(--radius-full); display: flex; align-items: center; gap: 6px;">
+            <span class="pulse-dot"></span> REAL-TIME AGGREGATE
+          </div>
+        </div>
+
+        <!-- MAIN LIVE BOOK VALUE HERO CARD -->
+        <div class="hero-book-card" style="margin-bottom: 24px;">
+          <div class="hero-header">
+            <div class="hero-label">
+              <span class="pulse-dot"></span> LIVE BOOK VALUE
+            </div>
+            <div style="font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: var(--radius-full);">
+              TOTAL ACTIVE BOOK
+            </div>
+          </div>
+
+          <div class="live-book-value-amount" id="settings-live-book-val-amount">
+            ₹ 0.00
+          </div>
+
+          <!-- 4 Dynamic Summary Sub-Stats -->
+          <div class="hero-stats-grid hero-stats-grid-4">
+            <div class="hero-mini-stat">
+              <div class="hero-mini-stat-label">TOTAL AREAS</div>
+              <div class="hero-mini-stat-value" id="lbv-summary-areas">0</div>
+            </div>
+            <div class="hero-mini-stat">
+              <div class="hero-mini-stat-label">TOTAL CLIENTS</div>
+              <div class="hero-mini-stat-value" id="lbv-summary-clients">0</div>
+            </div>
+            <div class="hero-mini-stat">
+              <div class="hero-mini-stat-label">TOTAL EXPOSURE</div>
+              <div class="hero-mini-stat-value" id="lbv-summary-exposure">₹ 0</div>
+            </div>
+            <div class="hero-mini-stat">
+              <div class="hero-mini-stat-label">TOTAL BOOK VALUE</div>
+              <div class="hero-mini-stat-value" id="lbv-summary-book">₹ 0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINANCIAL AREAS & ROUTES BREAKDOWN SECTION -->
+        <div class="sectors-section">
+          <div class="sectors-header-row" style="margin-bottom: 16px;">
+            <div>
+              <div class="section-label">FINANCIAL AREAS &amp; ROUTES</div>
+              <h2 class="section-title">PORTFOLIO BY SECTOR</h2>
+            </div>
+            <button class="btn-primary-sm" onclick="window.app.openModal('sector-modal')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              + NEW SECTOR
+            </button>
+          </div>
+
+          <div class="sectors-grid" id="lbv-breakdown-container">
+            <!-- Dynamically populated sector book cards -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           7. SECTOR DETAILS VIEW
+           ==================================================================== -->
+      <section id="view-sector-details" class="view-section">
+        <div class="sectors-header-row">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="btn-icon-subtle" onclick="window.app.switchView('home')" title="Back to Sectors">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div>
+              <div class="section-label">SECTOR OVERVIEW</div>
+              <h2 class="section-title" id="sector-detail-title">AGRICULTURE</h2>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="sector-add-client-btn" onclick="window.app.openNewCustomerScreen(window.app.currentSectorId)">
+            + Add Client
+          </button>
+        </div>
+
+        <!-- Sector Metrics Summary Card -->
+        <div class="financial-summary-grid" style="margin-top: 16px;">
+          <div class="fin-card">
+            <div class="fin-card-label">TOTAL CLIENTS</div>
+            <div class="fin-card-amount text-success" id="sd-client-count">0</div>
+            <div class="fin-card-sub">Active members in sector</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">LOAN EXPOSURE</div>
+            <div class="fin-card-amount" id="sd-exposure">₹ 0</div>
+            <div class="fin-card-sub">Active credit portfolio</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">COLLECTED</div>
+            <div class="fin-card-amount" style="color: var(--primary-dark);" id="sd-collected">₹ 0</div>
+            <div class="fin-card-sub">Total sector collections</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">OUTSTANDING</div>
+            <div class="fin-card-amount" style="color: #EA580C;" id="sd-outstanding">₹ 0</div>
+            <div class="fin-card-sub">Pending loan dues</div>
+          </div>
+        </div>
+
+        <!-- Sector Clients Table -->
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-title-row">
+            <div>
+              <div class="section-label">CLIENT ROSTER</div>
+              <h3 class="section-title">Customers in <span id="sd-table-sector-name">Sector</span></h3>
+            </div>
+            <button class="btn-primary-sm" onclick="window.app.openNewCustomerScreen(window.app.currentSectorId)">
+              + Add Client
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Roll No.</th>
+                  <th>Full Name</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Loan Limit</th>
+                  <th>Outstanding</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="sector-customers-tbody">
+                <!-- Filled dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           8. NEW CUSTOMER / ADD NEW CLIENT VIEW (MATCHING REFERENCE UI)
+           ==================================================================== -->
+      <section id="view-new-customer" class="view-section">
+        
+        <!-- PAGE HEADER: Title + Circular Close Button -->
+        <div class="new-customer-header">
+          <h1 class="new-customer-title">New Customer</h1>
+          <button type="button" class="btn-circular-close" onclick="window.app.closeNewCustomerScreen()" title="Close and return to Sector">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- CLEAN WHITE ROUNDED CARD WITH EXACT FORM FIELDS -->
+        <div class="new-customer-card">
+          <form id="dedicated-new-customer-form">
+            
+            <!-- 1. Full Name (Required) -->
+            <div class="form-group">
+              <label class="form-label" for="nc-fullname">Full Name <span class="text-danger">*</span></label>
+              <input type="text" id="nc-fullname" class="new-cust-input" placeholder="John Doe" required>
+            </div>
+
+            <!-- 2. Husband / Father Name (Required) -->
+            <div class="form-group">
+              <label class="form-label" for="nc-relativename">Husband / Father Name <span class="text-danger">*</span></label>
+              <input type="text" id="nc-relativename" class="new-cust-input" placeholder="Relative Name" required>
+            </div>
+
+            <!-- 3. Phone Number (Optional) -->
+            <div class="form-group">
+              <label class="form-label" for="nc-phone">Phone Number <span style="color: var(--text-muted); font-size: 0.72rem; text-transform: none; font-weight: 500;">(Optional)</span></label>
+              <input type="tel" id="nc-phone" class="new-cust-input" placeholder="+1234567890">
+            </div>
+
+            <!-- 4. Address / Place (Required) -->
+            <div class="form-group">
+              <label class="form-label" for="nc-address">Address / Place <span class="text-danger">*</span></label>
+              <input type="text" id="nc-address" class="new-cust-input" placeholder="123 Street City" required>
+            </div>
+
+            <!-- 5. Customer Loan Limit (Required, Numeric, Default 10000) -->
+            <div class="form-group">
+              <label class="form-label" for="nc-loanlimit">Customer Loan Limit <span class="text-danger">*</span></label>
+              <input type="number" id="nc-loanlimit" class="new-cust-input" value="10000" placeholder="10000" min="1000" step="500" required>
+            </div>
+
+            <!-- 6. Sector (Fixed / Read-only with Green Badge) -->
+            <div class="form-group">
+              <label class="form-label">Sector</label>
+              <div class="sector-fixed-box">
+                <span id="nc-sector-display-name">Agriculture</span>
+                <span class="badge-fixed">Fixed</span>
+              </div>
+              <input type="hidden" id="nc-sector-id-hidden" value="SEC-004">
+            </div>
+
+            <!-- 7. Save Customer Full-Width Green Button -->
+            <div style="margin-top: 24px;">
+              <button type="submit" class="btn-save-customer" id="nc-save-btn">
+                <span>Save Customer</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </section>
+
+    </main>
+
+      <!-- ====================================================================
+           9. CLIENT DETAILS VIEW
+           ==================================================================== -->
+      <section id="view-client-details" class="view-section" style="padding-bottom: 100px;">
+
+        <!-- Header -->
+        <div class="new-cust-header">
+          <button class="btn-circular-close" onclick="window.app.closeClientDetails()" title="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div>
+            <div class="section-label">CLIENT DETAILS</div>
+            <h2 class="section-title" id="cd-customer-name" style="color:var(--navy-900);">Customer Name</h2>
+            <div id="cd-customer-id-display" style="font-size:0.78rem;font-family:var(--font-mono);color:var(--text-muted);margin-top:2px;">Customer ID: —</div>
+          </div>
+          <span id="cd-status-badge" class="status-pill status-active" style="margin-left:auto;">ACTIVE</span>
+        </div>
+
+        <!-- Personal Information Card -->
+        <div class="card" style="margin-top:16px;">
+          <div class="section-label" style="margin-bottom:12px;">PERSONAL INFORMATION</div>
+          <div class="cd-info-grid">
+            <div class="cd-info-item">
+              <div class="cd-info-label">Full Name</div>
+              <div class="cd-info-value" id="cd-fullname">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Husband / Father Name</div>
+              <div class="cd-info-value" id="cd-relativename">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Phone Number</div>
+              <div class="cd-info-value" id="cd-phone">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Address / Place</div>
+              <div class="cd-info-value" id="cd-address">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Sector</div>
+              <div class="cd-info-value" id="cd-sector-name">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Loan Limit</div>
+              <div class="cd-info-value" id="cd-loanlimit">—</div>
+            </div>
+            <div class="cd-info-item">
+              <div class="cd-info-label">Date Joined</div>
+              <div class="cd-info-value" id="cd-joined">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Lending & Loan Limit Indicators (Requirement 11) -->
+        <div class="section-label" style="margin-top:20px;margin-bottom:8px;">LOAN STATUS & LIMIT OVERVIEW</div>
+        <div class="financial-summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+          <div class="fin-card">
+            <div class="fin-card-label">CUSTOMER LOAN LIMIT</div>
+            <div class="fin-card-amount" id="cd-loanlimit-stat" style="color:var(--navy-900);">₹ 0</div>
+            <div class="fin-card-sub">Max allowed disbursement</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">CURRENT OUTSTANDING</div>
+            <div class="fin-card-amount" id="cd-total-outstanding" style="color:#EA580C;">₹ 0</div>
+            <div class="fin-card-sub">Remaining balance</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">AVAILABLE FOR NEW LOAN</div>
+            <div class="fin-card-amount text-success" id="cd-available-limit-stat">₹ 0</div>
+            <div class="fin-card-sub" id="cd-available-sub">Eligibility check</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-label">ACTIVE LOAN</div>
+            <div class="fin-card-amount" id="cd-has-active-stat" style="font-size:1.15rem;padding-top:4px;">No</div>
+            <div class="fin-card-sub" id="cd-has-active-sub">1 loan per client rule</div>
+          </div>
+        </div>
+
+        <!-- Cumulative Financial Totals -->
+        <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;background:#F8FAFC;border:1px solid var(--border-color);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Total Principal Disbursed:</span>
+            <span id="cd-total-loan" style="font-weight:800;font-family:var(--font-mono);color:var(--navy-900);">₹ 0</span>
+          </div>
+          <div style="flex:1;min-width:180px;background:#F8FAFC;border:1px solid var(--border-color);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Total Amount Paid:</span>
+            <span id="cd-total-paid" style="font-weight:800;font-family:var(--font-mono);color:var(--primary-dark);">₹ 0</span>
+          </div>
+        </div>
+
+        <!-- Credit Balance row (hidden when 0) -->
+        <div id="cd-credit-balance-row" style="display:none;background:var(--primary-subtle);border-radius:12px;padding:10px 16px;margin-top:8px;align-items:center;justify-content:space-between;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--primary-dark);">★ Advance Credit Balance</div>
+          <div id="cd-credit-balance" style="font-weight:800;font-family:var(--font-mono);color:var(--primary-dark);">₹ 0</div>
+        </div>
+
+        <!-- Active Loan Section (Requirement 15) -->
+        <div style="margin-top:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <div class="section-label">ACTIVE LOAN</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);">Current outstanding loan (1 active loan rule)</div>
+            </div>
+            <button id="cd-create-loan-btn" class="btn-primary-sm" onclick="window.app.handleCreateLoanClick(window.app.currentClientId)" style="font-weight:700;">
+              + Create Loan
+            </button>
+          </div>
+          <div id="cd-active-loan-container">
+            <!-- filled dynamically -->
+          </div>
+        </div>
+
+        <!-- Loan History Section (Requirement 15) -->
+        <div style="margin-top:28px;">
+          <div class="section-label" style="margin-bottom:12px;">LOAN HISTORY</div>
+          <div id="cd-loan-history-container">
+            <!-- filled dynamically with fully paid historical loans -->
+          </div>
+        </div>
+
+        <!-- Payment History Section -->
+        <div class="card" style="margin-top:28px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div class="section-label">PAYMENT HISTORY</div>
+            <button id="cd-add-payment-btn" class="btn-primary-sm" onclick="window.app.openActiveClientPaymentModal()">
+              + Add Payment
+            </button>
+          </div>
+          <div id="cd-payment-history-container">
+            <!-- filled dynamically -->
+          </div>
+        </div>
+
+      </section>
+
+    <!-- END OF VIEWS -->
+
+    <!-- ====================================================================
+         MODAL: Active Loan Exists Restriction Blocker (Requirement 2 & 18)
+         ==================================================================== -->
+    <div class="modal-overlay" id="active-loan-blocker-modal">
+      <div class="modal-box" style="max-width: 440px; text-align: center; padding: 28px 24px;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h3 style="color: var(--navy-900); font-weight: 800; font-size: 1.18rem; margin-bottom: 8px;">ACTIVE LOAN EXISTS</h3>
+        <p id="alb-message-text" style="font-size: 0.92rem; color: var(--navy-800); line-height: 1.5; font-weight: 600;">
+          This customer has an active loan with <span id="alb-outstanding-val" style="color: #EA580C; font-weight: 800;">₹ 0</span> outstanding.
+        </p>
+        <p style="margin-top: 8px; color: var(--text-muted); font-size: 0.83rem;">
+          Please collect the remaining amount before creating a new loan.
+        </p>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 24px;">
+          <button type="button" class="btn modal-cancel-btn" onclick="window.app.closeModal('active-loan-blocker-modal')" style="flex: 1;">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="window.app.viewCurrentActiveLoan()" style="flex: 1;">View Current Loan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         MODAL: CREATE NEW LOAN (Requirement 5 & 6)
+         ==================================================================== -->
+    <div class="modal-overlay" id="client-add-loan-modal">
+      <div class="modal-box loan-modal">
+        <div class="modal-header">
+          <h3 class="modal-title">CREATE NEW LOAN</h3>
+          <button class="modal-close-btn" onclick="window.app.closeModal('client-add-loan-modal')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <form id="client-loan-form" class="modal-form-flex" autocomplete="off">
+          <div class="modal-body-scroll">
+            <!-- Customer & Limit Readonly Info Grid -->
+            <div style="background:#F8FAFC;border:1px solid var(--border-color);border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Customer:</span>
+                  <div id="cl-customer-display" style="font-weight:800;color:var(--navy-900);font-size:0.88rem;margin-top:2px;">—</div>
+                </div>
+                <div>
+                  <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Customer Loan Limit:</span>
+                  <div id="cl-limit-display" style="font-weight:800;font-family:var(--font-mono);color:var(--navy-900);font-size:0.88rem;margin-top:2px;">₹ 0</div>
+                </div>
+                <div>
+                  <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Previous Loan:</span>
+                  <div id="cl-previous-loan-display" style="font-weight:700;font-size:0.82rem;color:var(--primary-dark);margin-top:2px;">PAID</div>
+                </div>
+                <div>
+                  <span style="font-size:0.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Available Loan Limit:</span>
+                  <div id="cl-available-limit-display" style="font-weight:800;font-family:var(--font-mono);color:var(--primary-dark);font-size:0.88rem;margin-top:2px;">₹ 0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loan Amount -->
+            <div class="form-group">
+              <label class="form-label" for="cl-amount">Loan Amount <span class="required-star">*</span></label>
+              <input type="number" id="cl-amount" class="form-input" placeholder="e.g. 150000" min="1" step="1" required />
+              <div id="cl-amount-feedback" style="font-size:0.75rem;margin-top:4px;font-weight:600;display:none;"></div>
+            </div>
+
+            <div class="form-row-2">
+              <!-- Interest Rate -->
+              <div class="form-group">
+                <label class="form-label" for="cl-interest">Interest Rate</label>
+                <input type="text" id="cl-interest" class="form-input" value="12% p.a." />
+              </div>
+              <!-- Tenure -->
+              <div class="form-group">
+                <label class="form-label" for="cl-tenure">Tenure (Months)</label>
+                <input type="number" id="cl-tenure" class="form-input" value="12" min="1" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <!-- Loan Date -->
+              <div class="form-group">
+                <label class="form-label" for="cl-loan-date">Loan Date</label>
+                <input type="date" id="cl-loan-date" class="form-input" required />
+              </div>
+              <!-- Due Date -->
+              <div class="form-group">
+                <label class="form-label" for="cl-due-date">Due Date</label>
+                <input type="date" id="cl-due-date" class="form-input" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cl-method">Payment Method</label>
+              <select id="cl-method" class="form-input">
+                <option selected>Bank Transfer</option>
+                <option>Cash</option>
+                <option>UPI</option>
+                <option>Cheque</option>
+              </select>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label class="form-label" for="cl-notes">Notes <span style="font-size:0.75rem;color:var(--text-muted);">(Optional)</span></label>
+              <input type="text" id="cl-notes" class="form-input" placeholder="Purpose or remarks..." />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn modal-cancel-btn" onclick="window.app.closeModal('client-add-loan-modal')">Cancel</button>
+            <button type="submit" id="cl-submit-btn" class="btn btn-primary">CREATE LOAN</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         MODAL: Record Payment for Client Loan
+         ==================================================================== -->
+    <div class="modal-overlay" id="client-record-payment-modal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 class="modal-title">Record Payment</h3>
+          <button class="modal-close-btn" onclick="window.app.closeModal('client-record-payment-modal')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <form id="client-payment-form" class="modal-form-flex" autocomplete="off">
+          <div class="modal-body-scroll">
+            <!-- Customer (read-only) -->
+            <div class="form-group">
+              <label class="form-label">Customer</label>
+              <div id="cp-customer-display" class="field-readonly-box">—</div>
+            </div>
+
+            <!-- Loan (read-only) -->
+            <div class="form-group">
+              <label class="form-label">Loan</label>
+              <div id="cp-loan-display" class="field-readonly-box" style="font-family:var(--font-mono);font-size:0.85rem;">—</div>
+            </div>
+
+            <!-- Payment Amount -->
+            <div class="form-group">
+              <label class="form-label" for="cp-amount">Payment Amount <span class="required-star">*</span></label>
+              <input type="number" id="cp-amount" class="form-input" placeholder="Enter payment amount" min="0.01" step="0.01" required />
+            </div>
+
+            <div class="form-row-2">
+              <!-- Payment Date -->
+              <div class="form-group">
+                <label class="form-label" for="cp-date">Payment Date <span class="required-star">*</span></label>
+                <input type="date" id="cp-date" class="form-input" required />
+              </div>
+              <!-- Payment Method -->
+              <div class="form-group">
+                <label class="form-label" for="cp-method">Payment Method</label>
+                <select id="cp-method" class="form-input">
+                  <option>Cash</option>
+                  <option>UPI</option>
+                  <option>Bank Transfer</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Reference -->
+            <div class="form-group">
+              <label class="form-label" for="cp-reference">Reference / Transaction ID <span style="color:var(--text-muted);font-size:0.75rem;">(Optional)</span></label>
+              <input type="text" id="cp-reference" class="form-input" placeholder="UTR / Ref number..." />
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+              <label class="form-label" for="cp-notes">Notes <span style="color:var(--text-muted);font-size:0.75rem;">(Optional)</span></label>
+              <input type="text" id="cp-notes" class="form-input" placeholder="Any remarks..." />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn modal-cancel-btn" onclick="window.app.closeModal('client-record-payment-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Payment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         FIXED BOTTOM NAVIGATION BAR (Home | History | Pay | Calc | Settings)
+         ========================================================================== -->
+    <nav class="bottom-nav-bar">
+      
+      <!-- 1. HOME -->
+      <button class="nav-item active" data-view="home">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <span class="nav-label">Home</span>
+      </button>
+
+      <!-- 2. HISTORY -->
+      <button class="nav-item" data-view="transactions">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        </div>
+        <span class="nav-label">History</span>
+      </button>
+
+      <!-- 3. ELEVATED CENTER PAY BUTTON -->
+      <div class="nav-center-item" data-view="pay">
+        <button class="nav-center-btn" title="Collect or Disburse">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span class="nav-center-label">Pay</span>
+        </button>
+      </div>
+
+      <!-- 4. AUDIT -->
+      <button class="nav-item" data-view="audit">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <span class="nav-label">Audit</span>
+      </button>
+
+      <!-- 5. CALC -->
+      <button class="nav-item" data-view="calc">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+        </div>
+        <span class="nav-label">Calc</span>
+      </button>
+
+      <!-- 6. SETTINGS -->
+      <button class="nav-item" data-view="profile">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        <span class="nav-label">Settings</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODAL SYSTEM
+       ========================================================================== -->
+
+  <!-- AUDIT COMING SOON MODAL -->
+  <div id="audit-coming-soon-modal" class="modal-overlay audit-coming-soon-overlay">
+    <div class="modal-content audit-coming-soon-card">
+      <button class="btn-icon-subtle modal-close-btn audit-cs-close-btn" aria-label="Close modal">&times;</button>
+      
+      <!-- Subtle animated background ambient glow -->
+      <div class="audit-cs-bg-glow" aria-hidden="true"></div>
+
+      <!-- Icon Container with Animated Audit/Verification Document & Checkmark -->
+      <div class="audit-cs-icon-wrap">
+        <div class="audit-cs-icon-pulse-ring"></div>
+        <div class="audit-cs-icon-box">
+          <svg class="audit-cs-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="cs-doc-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="csDocGrad" x1="14" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#06B6D4" />
+                <stop offset="100%" stop-color="#3B82F6" />
+              </linearGradient>
+              <linearGradient id="csCheckGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#34D399" />
+                <stop offset="100%" stop-color="#10B981" />
+              </linearGradient>
+            </defs>
+
+            <!-- Document Sheet -->
+            <path class="audit-cs-doc" d="M18 8C15.7909 8 14 9.79086 14 12V52C14 54.2091 15.7909 56 18 56H46C48.2091 56 50 54.2091 50 52V20L38 8H18Z" 
+                  stroke="url(#csDocGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="rgba(15, 23, 42, 0.65)" />
+            <!-- Folded Corner -->
+            <path d="M38 8V20H50" stroke="url(#csDocGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- Document Ledger Text Lines -->
+            <line class="audit-cs-line line-1" x1="22" y1="24" x2="32" y2="24" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.8" />
+            <line class="audit-cs-line line-2" x1="22" y1="32" x2="42" y2="32" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.8" />
+            <line class="audit-cs-line line-3" x1="22" y1="40" x2="30" y2="40" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.8" />
+
+            <!-- Circular Verification Badge & Animated Checkmark -->
+            <g class="audit-cs-badge-group">
+              <circle cx="44" cy="44" r="13" fill="#042F2E" stroke="#10B981" stroke-width="2" filter="url(#cs-doc-glow)" />
+              <path class="audit-cs-check" d="M38 44.5L42 48.5L50 40" stroke="url(#csCheckGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Tag / Header -->
+      <div class="audit-cs-tag">AUDIT</div>
+
+      <!-- Main Title -->
+      <h3 class="audit-cs-title">Coming Soon</h3>
+
+      <!-- Subtitle Description -->
+      <p class="audit-cs-desc">
+        Audit &amp; Reconciliation features are currently under development.
+      </p>
+
+      <!-- Action Button: BACK TO HOME -->
+      <button type="button" class="btn btn-primary audit-cs-back-btn" id="audit-cs-back-home-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        BACK TO HOME
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. COLLECT PAYMENT MODAL -->
+  <div id="collect-payment-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">+ Collect Payment</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="collect-payment-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <select id="pay-customer-select" class="form-input" style="padding-left: 14px;" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Loan Reference ID</label>
+            <input type="text" id="pay-loan-id" class="form-input" placeholder="Optional (e.g. LN-501 or general collection)" style="padding-left: 14px;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Payment Amount (₹)</label>
+              <input type="number" id="pay-amount" class="form-input" placeholder="Enter amount" style="padding-left: 14px; font-weight: 800;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Date</label>
+              <input type="date" id="pay-date" class="form-input" style="padding-left: 14px;" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select id="pay-method" class="form-input" style="padding-left: 14px;" required>
+              <option value="Cash">Cash (Physical)</option>
+              <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+              <option value="Bank Transfer">Bank Transfer (NEFT / IMPS)</option>
+              <option value="Card">Debit / Credit Card</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notes / Remarks</label>
+            <textarea id="pay-notes" class="form-input" rows="2" style="padding: 10px 14px;" placeholder="e.g. Monthly installment received with receipt"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Reconcile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. DISBURSE LOAN MODAL -->
+  <div id="disburse-loan-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">+ Disburse Loan</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="disburse-loan-form">
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Borrower Full Name</label>
+              <input type="text" id="loan-cust-name" class="form-input" placeholder="e.g. Ravi Shankar" style="padding-left: 14px;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="text" id="loan-cust-phone" class="form-input" placeholder="+91 98410 00000" style="padding-left: 14px;" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Financial Sector / Area</label>
+            <select id="loan-sector-select" class="form-input" style="padding-left: 14px;" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Disbursement Amount (₹)</label>
+              <input type="number" id="loan-amount-input" class="form-input" placeholder="25000" style="padding-left: 14px; font-weight: 800;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Interest Rate (% p.a.)</label>
+              <input type="number" id="loan-interest-input" class="form-input" value="12" step="0.5" style="padding-left: 14px;" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Tenure (Months)</label>
+              <input type="number" id="loan-tenure-input" class="form-input" value="12" style="padding-left: 14px;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Disbursement Date</label>
+              <input type="date" id="loan-date-input" class="form-input" style="padding-left: 14px;" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select id="loan-method-select" class="form-input" style="padding-left: 14px;" required>
+              <option value="Bank Transfer">Bank Transfer (NEFT / RTGS)</option>
+              <option value="UPI">UPI Transfer</option>
+              <option value="Cash">Cash Handover</option>
+              <option value="Cheque">Bank Cheque</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Loan Purpose / Notes</label>
+            <textarea id="loan-notes-input" class="form-input" rows="2" style="padding: 10px 14px;" placeholder="e.g. Small business inventory expansion"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Disbursement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. ADD EXPENSE MODAL -->
+  <div id="add-expense-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">+ Add Expense</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="add-expense-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Expense Category</label>
+            <select id="exp-category-select" class="form-input" style="padding-left: 14px;" required>
+              <option value="Transport">Transport & Travel</option>
+              <option value="Office">Office Supplies & Stationery</option>
+              <option value="Salary">Staff Salary / Compensation</option>
+              <option value="Maintenance">Maintenance & Repairs</option>
+              <option value="Utilities">Utilities & Rent</option>
+              <option value="Other">Other Operational Expenses</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" id="exp-desc-input" class="form-input" placeholder="e.g. Field agent petrol allowance" style="padding-left: 14px;" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Amount (₹)</label>
+              <input type="number" id="exp-amount-input" class="form-input" placeholder="1500" style="padding-left: 14px; font-weight: 800;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expense Date</label>
+              <input type="date" id="exp-date-input" class="form-input" style="padding-left: 14px;" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment Method</label>
+            <select id="exp-method-select" class="form-input" style="padding-left: 14px;" required>
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Card">Company Card</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-danger">Record Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. NEW SECTOR MODAL -->
+  <div id="new-sector-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">+ New Financial Sector</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="new-sector-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Sector / Area Name</label>
+            <input type="text" id="sector-name-input" class="form-input" placeholder="e.g. VILUPPURAM" style="padding-left: 14px; text-transform: uppercase;" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Sector Code (Optional)</label>
+            <input type="text" id="sector-code-input" class="form-input" placeholder="e.g. VPM-01" style="padding-left: 14px; text-transform: uppercase;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Sector</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. NEW CLIENT MODAL -->
+  <div id="new-customer-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">+ Enroll New Client</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="new-customer-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Client Full Name</label>
+            <input type="text" id="cust-name-input" class="form-input" placeholder="e.g. K. Sundararajan" style="padding-left: 14px;" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="text" id="cust-phone-input" class="form-input" placeholder="+91 98400 00000" style="padding-left: 14px;" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email (Optional)</label>
+              <input type="email" id="cust-email-input" class="form-input" placeholder="client@example.com" style="padding-left: 14px;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Assigned Sector</label>
+            <select id="cust-sector-select" class="form-input" style="padding-left: 14px;" required>
+              <!-- Filled dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Residential / Business Address</label>
+            <textarea id="cust-address-input" class="form-input" rows="2" style="padding: 10px 14px;" placeholder="Full street address"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Initial Loan Principal (₹)</label>
+            <input type="number" id="cust-loan-amount-input" class="form-input" placeholder="0" style="padding-left: 14px; font-weight: 800;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Enroll Client</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. INITIAL FUND MODAL -->
+  <div id="initial-fund-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Initial Operating Fund</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="initial-fund-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Initial Capital Balance (₹)</label>
+            <input type="number" id="initial-fund-modal-input" class="form-input" style="padding-left: 14px; font-size: 1.2rem; font-weight: 800;" min="0" required>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">
+              This base fund feeds into closing balance calculations: <code>Closing = Initial + Inflow - Outflow</code>.
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Fund</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. EDIT PROFILE MODAL -->
+  <div id="edit-profile-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Personal Profile</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <form id="edit-profile-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="edit-prof-name" class="form-input" style="padding-left: 14px;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email ID</label>
+            <input type="email" id="edit-prof-email" class="form-input" style="padding-left: 14px;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Phone</label>
+            <input type="text" id="edit-prof-phone" class="form-input" style="padding-left: 14px;" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. AUDIT DETAIL MODAL -->
+  <div id="audit-detail-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="audit-modal-title">Audit Analysis</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+          <div>
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted);">INTEGRITY SCORE</div>
+            <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark);" id="audit-modal-score">94%</div>
+          </div>
+          <div>
+            <span id="audit-modal-status" class="status-pill status-active">VERIFIED</span>
+          </div>
+        </div>
+
+        <p id="audit-modal-details" style="font-size: 0.85rem; color: var(--navy-800); margin-bottom: 16px;"></p>
+
+        <div class="section-label" style="margin-bottom: 8px;">VERIFICATION CHECKLIST</div>
+        <div id="audit-modal-findings"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary modal-close-btn">Close Inspection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. PRINTABLE VOUCHER / RECEIPT MODAL -->
+  <div id="voucher-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="voucher-title">Official Financial Voucher</h3>
+        <button class="btn-icon-subtle modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="background: #F8FAFC; border-radius: var(--radius-lg); padding: 20px; border: 1px dashed var(--border-color);">
+        <div style="text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px;">
+          <div style="font-size: 1.2rem; font-weight: 800; color: var(--navy-900);">micro<span style="color: var(--primary);">fi</span></div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Certified Ledger Receipt & Proof of Settlement</div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+          <span style="color: var(--text-muted);">Voucher ID:</span>
+          <span style="font-weight: 800; font-family: var(--font-mono);" id="voucher-id">PAY-801</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+          <span style="color: var(--text-muted);">Counterparty / Client:</span>
+          <span style="font-weight: 800;" id="voucher-party">Anand Sharma</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 8px;">
+          <span style="color: var(--text-muted);">Transaction Date:</span>
+          <span style="font-weight: 700;" id="voucher-date">2026-03-01</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 12px;">
+          <span style="color: var(--text-muted);">Payment Channel:</span>
+          <span style="font-weight: 700;" id="voucher-method">UPI</span>
+        </div>
+
+        <div style="padding: 14px; background: #FFFFFF; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 12px;">
+          <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">SETTLEMENT AMOUNT</div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--navy-900);" id="voucher-amount">₹ 5,000</div>
+        </div>
+
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          <strong>Notes:</strong> <span id="voucher-notes">Principal + Interest installment</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print Voucher
+        </button>
+        <button type="button" class="btn btn-primary modal-close-btn">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Bulk Data Import Wizard
+       ==================================================================== -->
+  <div id="bulk-import-modal" class="modal-overlay">
+    <div class="bulk-modal-box">
+      <!-- Modal Header -->
+      <div class="modal-header" style="padding:16px 22px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--primary-subtle);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div>
+            <h3 class="modal-title" style="margin:0;font-size:1.15rem;">Bulk Data Import Engine</h3>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Import Excel (.xlsx/.xls), CSV, or JSON records into microfi</div>
+          </div>
+        </div>
+        <button type="button" class="btn-icon-subtle modal-close-btn" onclick="window.bulkImportManager.closeImportModal()">&times;</button>
+      </div>
+
+      <!-- Steps Progress Header -->
+      <div class="import-steps-header">
+        <div class="import-step-pill active" data-step="1">
+          <span>1</span> Upload File
+        </div>
+        <div class="import-step-pill" data-step="2">
+          <span>2</span> Map &amp; Validate
+        </div>
+        <div class="import-step-pill" data-step="3">
+          <span>3</span> Processing
+        </div>
+        <div class="import-step-pill" data-step="4">
+          <span>4</span> Summary
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body-scroll" style="padding:22px;max-height:calc(90vh - 180px);overflow-y:auto;">
+
+        <!-- STEP 1: Upload File -->
+        <div id="import-step-1">
+          <div id="import-drop-zone" class="import-drop-zone"
+               onclick="document.getElementById('bulk-file-input').click()"
+               ondragover="event.preventDefault(); this.classList.add('drag-over');"
+               ondragleave="this.classList.remove('drag-over');"
+               ondrop="window.bulkImportManager.handleFileDrop(event)">
+            <input type="file" id="bulk-file-input" accept=".csv,.xlsx,.xls,.json" style="display:none;" onchange="window.bulkImportManager.handleFileSelect(event)">
+            <div style="width:54px;height:54px;border-radius:50%;background:var(--primary-subtle);color:var(--primary-dark);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <h4 style="font-size:1.05rem;font-weight:800;color:var(--navy-900);margin:0 0 6px 0;">Drag and drop your file here, or browse</h4>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin:0 0 14px 0;">Supports Microsoft Excel (.xlsx, .xls), Comma-Separated Values (.csv), and JSON (.json)</p>
+            <button type="button" class="btn btn-primary" style="padding:8px 20px;font-size:0.82rem;pointer-events:none;">
+              Choose File from Device
+            </button>
+            <div id="file-upload-status" style="margin-top:12px;font-size:0.8rem;color:var(--primary-dark);"></div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding:14px 18px;background:#F8FAFC;border:1px solid var(--border-color);border-radius:12px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <div style="font-size:0.85rem;font-weight:800;color:var(--navy-900);">Need a starter sample file?</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Download official templates with example headers and values.</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="window.bulkImportManager.openTemplateModal()" style="font-size:0.78rem;padding:7px 14px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Sample Templates
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Mapping & Preview -->
+        <div id="import-step-2" style="display:none;">
+          <div id="import-file-meta" style="margin-bottom:14px;"></div>
+          <div id="import-validation-stats"></div>
+
+          <!-- Configuration Row: Category & Duplicate Strategy -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-bottom:18px;background:#F8FAFC;padding:14px;border-radius:12px;border:1px solid var(--border-color);">
+            <div class="form-group" style="margin:0;">
+              <label class="form-label" style="font-size:0.75rem;">Import Entity Type</label>
+              <select id="import-category-select" class="form-input" style="padding:7px 12px;font-size:0.85rem;font-weight:700;">
+                <option value="customers">Customers / Clients</option>
+                <option value="loans">Loan Disbursements (Outflow)</option>
+                <option value="payments">Payment Collections (Inflow)</option>
+                <option value="expenses">Operational Expenses</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label class="form-label" style="font-size:0.75rem;">Duplicate Handling Rule</label>
+              <select id="import-duplicate-select" class="form-input" style="padding:7px 12px;font-size:0.85rem;">
+                <option value="skip">Skip Existing Records (Safest)</option>
+                <option value="update">Update Existing Records</option>
+                <option value="import_new">Import as New Records</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Error List Display -->
+          <div id="import-error-list-container" style="margin-bottom:16px;"></div>
+
+          <!-- Column Mapping Accordion -->
+          <details style="margin-bottom:16px;background:#fff;border:1px solid var(--border-color);border-radius:10px;overflow:hidden;">
+            <summary style="padding:10px 16px;font-weight:800;font-size:0.85rem;color:var(--navy-900);cursor:pointer;background:#F8FAFC;user-select:none;">
+              ⚙️ Column Mapping Configuration (Click to view or adjust)
+            </summary>
+            <div style="padding:12px;overflow-x:auto;">
+              <table class="custom-table" style="width:100%;font-size:0.8rem;">
+                <thead>
+                  <tr>
+                    <th>Uploaded Column</th>
+                    <th>Sample Value (Row 1)</th>
+                    <th>Map to Field</th>
+                  </tr>
+                </thead>
+                <tbody id="import-mapping-tbody"></tbody>
+              </table>
+            </div>
+          </details>
+
+          <!-- Preview Table -->
+          <div style="font-size:0.85rem;font-weight:800;color:var(--navy-900);margin-bottom:8px;">Data Preview (First 12 Rows):</div>
+          <div class="table-container" style="max-height:240px;overflow:auto;border:1px solid var(--border-color);border-radius:8px;">
+            <table class="custom-table" style="font-size:0.8rem;">
+              <thead id="import-preview-thead"></thead>
+              <tbody id="import-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- STEP 3: Processing & Progress -->
+        <div id="import-step-3" style="display:none;padding:30px 20px;text-align:center;">
+          <div style="width:54px;height:54px;border-radius:50%;background:var(--primary-subtle);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px;animation:profile-status-pulse 1.5s infinite;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h3 style="font-size:1.2rem;font-weight:900;color:var(--navy-900);margin:0 0 6px 0;">Importing Data into microfi...</h3>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin:0;">Validating relationships, updating loan ledgers, and recording audit history.</p>
+
+          <div class="import-progress-bar-wrap">
+            <div id="import-progress-fill" class="import-progress-fill"></div>
+          </div>
+          <div id="import-progress-text" style="font-size:0.9rem;font-weight:800;font-family:var(--font-mono);color:var(--primary-dark);">0%</div>
+          <div id="import-progress-sub" style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Starting batch processor...</div>
+        </div>
+
+        <!-- STEP 4: Summary -->
+        <div id="import-step-4" style="display:none;">
+          <div id="import-summary-container"></div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" style="padding:14px 22px;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <button type="button" class="btn modal-cancel-btn" onclick="window.bulkImportManager.closeImportModal()">Cancel</button>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button type="button" id="import-back-btn" class="btn btn-secondary" onclick="window.bulkImportManager.showStep(1)" style="display:none;">&larr; Back</button>
+          <button type="button" id="import-confirm-btn" class="btn btn-primary" onclick="window.bulkImportManager.executeImport()" style="display:none;">
+            Confirm Import
+          </button>
+          <button type="button" id="import-done-btn" class="btn btn-primary" onclick="window.bulkImportManager.closeImportModal()" style="display:none;">
+            Done &amp; View Ledger
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: Download Sample Templates
+       ==================================================================== -->
+  <div id="import-template-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Download Import Templates</h3>
+        <button class="modal-close-btn" onclick="window.bulkImportManager.closeTemplateModal()">&times;</button>
+      </div>
+      <div class="modal-body-scroll" style="padding:20px;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0;">Download official formatted templates with sample data to quickly prepare your ledger entries.</p>
+        
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--border-color);border-radius:10px;background:#fff;">
+            <div>
+              <div style="font-weight:800;font-size:0.9rem;color:var(--navy-900);">👥 Customers Template</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Name, Roll Number, Phone, Email, Father Name, Sector, Limit</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="window.bulkImportManager.downloadTemplate('customers')" style="font-size:0.75rem;padding:6px 12px;">.CSV</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--border-color);border-radius:10px;background:#fff;">
+            <div>
+              <div style="font-weight:800;font-size:0.9rem;color:var(--navy-900);">💰 Loans Template</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Customer Roll, Loan ID, Amount, Interest %, Tenure, Date, Method</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="window.bulkImportManager.downloadTemplate('loans')" style="font-size:0.75rem;padding:6px 12px;">.CSV</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--border-color);border-radius:10px;background:#fff;">
+            <div>
+              <div style="font-weight:800;font-size:0.9rem;color:var(--navy-900);">📥 Payments Template</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Loan ID, Payment Amount, Payment Date, Method, Reference ID</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="window.bulkImportManager.downloadTemplate('payments')" style="font-size:0.75rem;padding:6px 12px;">.CSV</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--border-color);border-radius:10px;background:#fff;">
+            <div>
+              <div style="font-weight:800;font-size:0.9rem;color:var(--navy-900);">🧾 Expenses Template</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Expense ID, Category, Description, Amount, Date, Method</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="window.bulkImportManager.downloadTemplate('expenses')" style="font-size:0.75rem;padding:6px 12px;">.CSV</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--primary-light);border-radius:10px;background:var(--primary-subtle);">
+            <div>
+              <div style="font-weight:800;font-size:0.9rem;color:var(--primary-dark);">📦 All-in-One Comprehensive Template</div>
+              <div style="font-size:0.75rem;color:var(--navy-700);">Combined JSON with Customers, Loans, Payments &amp; Expenses</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="window.bulkImportManager.downloadTemplate('json_complete')" style="font-size:0.75rem;padding:6px 12px;">.JSON</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn modal-cancel-btn" onclick="window.bulkImportManager.closeTemplateModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- Core Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/audit.js"></script>
+  <script src="js/bulk-import.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
